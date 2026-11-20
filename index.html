@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FestForge - TechnoVaganza 2026</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand-wrap">
+        <h1>FestForge</h1>
+        <span class="fest-pill">TechnoVaganza 2026</span>
+      </div>
+
+      <div id="headerRight" class="header-right" style="display: none;">
+        <nav id="mainNav">
+          <a href="#schedule">Schedule</a>
+          <a href="#events">Events</a>
+          <a href="#register">Register</a>
+          <a href="#checkin">Check-In</a>
+          <a href="#cert">Certificate</a>
+          <a href="#announcements">Announcements</a>
+        </nav>
+        <div id="loggedInBadge" class="logged-badge">
+          <span id="userInfoText"></span>
+          <button type="button" onclick="studentLogout()" class="logout-btn">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 1ST SCREEN: STUDENT LOGIN ==================== -->
+  <section id="login" class="login-section">
+    <div class="box login-box">
+      <div class="login-top-bar"></div>
+      <h2>Student Login</h2>
+      <p id="loginStatus">Enter your Name, Roll No, and Email to continue</p>
+
+      <form class="login-form" onsubmit="studentLogin(event)">
+        <input type="text" id="loginName" placeholder="Full Name (e.g., Rahul Sharma)" required />
+        <input type="text" id="loginRoll" placeholder="Roll Number (e.g., 24CS1045)" required />
+        <input type="email" id="loginEmail" placeholder="Email Address (e.g., rahul@college.edu)" required />
+        <button type="submit" class="primary-btn">Login to FestForge</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ==================== MAIN PORTAL (SHOWN AFTER LOGIN) ==================== -->
+  <div id="portalContent" style="display: none;">
+
+    <!-- Live updates ticker -->
+    <div class="ticker"><span id="tickerText"></span></div>
+
+    <!-- Countdown -->
+    <section class="hero">
+      <span class="hero-badge">ANNUAL TECH &amp; CULT FEST</span>
+      <h2 class="hero-title">TechnoVaganza 2026</h2>
+      <p>Festival kicks off in</p>
+      <div id="countdown"></div>
+    </section>
+
+    <!-- Schedule hub -->
+    <section id="schedule">
+      <div class="section-head">
+        <h2>Festival Schedule</h2>
+      </div>
+      <div class="day-toggle">
+        <button id="dayBtn1" onclick="showDay(1)">Day 1</button>
+        <button id="dayBtn2" onclick="showDay(2)">Day 2</button>
+      </div>
+      <div id="scheduleGrid" class="grid"></div>
+    </section>
+
+    <!-- Events with category filter -->
+    <section id="events">
+      <div class="section-head">
+        <h2>Events</h2>
+      </div>
+      <div id="catTabs" class="cat-tabs"></div>
+      <div class="search-wrap">
+        <input id="search" placeholder="Search events..." oninput="renderEvents()" />
+      </div>
+      <div id="eventList" class="grid"></div>
+    </section>
+
+    <!-- Registration -->
+    <section id="register">
+      <div class="section-head">
+        <h2>Register for an Event</h2>
+      </div>
+      <div class="center-panel">
+        <div class="box accent-purple form-card">
+          <select id="eventSel"></select>
+          <input id="name" placeholder="Your name" />
+          <input id="email" placeholder="Email" />
+          <select id="team">
+            <option value="1">Team size: 1 (Solo)</option>
+            <option value="2">Team size: 2</option>
+            <option value="3">Team size: 3</option>
+            <option value="4">Team size: 4</option>
+            <option value="5">Team size: 5</option>
+          </select>
+          <button type="button" class="primary-btn full-btn" onclick="registerTeam()">Register and Get Ticket</button>
+          <p id="regMsg"></p>
+          <div id="ticketBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Check-in -->
+    <section id="checkin">
+      <div class="section-head">
+        <h2>Volunteer Check-In</h2>
+      </div>
+      <div class="split-row">
+        <div class="box accent-teal checkin-main">
+          <input id="scanCode" placeholder="Enter ticket code (e.g. FF-XXXX)" />
+          <button type="button" class="teal-btn" onclick="checkIn()">Verify and Check In</button>
+          <p id="checkMsg"></p>
+          <h3>All Tickets</h3>
+          <div class="tableWrap" id="ticketTable"></div>
+        </div>
+
+        <div class="box accent-purple checkin-side">
+          <h3>Check-In Summary</h3>
+          <div class="stats-grid">
+            <div class="stat-pill">
+              <span id="totalTicketsCount">0</span>
+              <small>Total Passes</small>
+            </div>
+            <div class="stat-pill stat-ok">
+              <span id="checkedInCount">0</span>
+              <small>Checked-In</small>
+            </div>
+            <div class="stat-pill stat-wait">
+              <span id="pendingCount">0</span>
+              <small>Pending</small>
+            </div>
+          </div>
+          <h4>Volunteer Tips</h4>
+          <ul class="tip-list">
+            <li>Enter the exact <b>FF-XXXX</b> code from the student pass.</li>
+            <li>Duplicate check-ins are automatically blocked.</li>
+            <li>Only <b>Checked-In</b> tickets can generate certificates.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Certificate -->
+    <section id="cert">
+      <div class="section-head">
+        <h2>Participation Certificate</h2>
+      </div>
+      <div class="box cert-box accent-pink">
+        <input id="certCode" placeholder="Enter your ticket code" />
+        <div class="btn-row">
+          <button type="button" class="primary-btn" onclick="makeCertificate()">Generate Certificate</button>
+          <button type="button" class="amber-btn" onclick="downloadCertificate()">Download PNG</button>
+        </div>
+        <p id="certMsg"></p>
+        <canvas id="certCanvas" width="1600" height="1130"></canvas>
+      </div>
+    </section>
+
+    <!-- Post Announcement -->
+    <section id="announcements">
+      <div class="section-head">
+        <h2>Post Announcement</h2>
+      </div>
+      <div class="box ann-box accent-amber">
+        <input type="text" id="annTitle" placeholder="Announcement Title (e.g., RoboWars Finals)" />
+        <textarea id="annText" rows="3" placeholder="Write announcement details..."></textarea>
+        <button type="button" class="amber-btn" onclick="postAnnouncement()">Post Announcement</button>
+        <p id="annMsg"></p>
+      </div>
+
+      <h3>Live Announcements</h3>
+      <div id="announcementList" class="grid"></div>
+    </section>
+
+  </div>
+
+  <!-- QR code library (needs internet) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
